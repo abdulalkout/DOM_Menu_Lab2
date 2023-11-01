@@ -36,17 +36,16 @@ const topMenuEl = document.querySelector("#top-menu");
 const subMenuEl = document.querySelector("#sub-menu");
 let showingSubMenu = false;
 
-// Functions
 mainEl.style.backgroundColor = "var(--main-bg)";
 mainEl.innerHTML = "<h1>SEI Rocks!</h1>";
 mainEl.className = "flex-ctr";
 
-// ------------------------------------TopElement-------------------
+// ----------TopElement-------------------
 topMenuEl.className = "flex-around";
 topMenuEl.style.height = "100%";
 topMenuEl.style.backgroundColor = "var(--top-menu-bg)";
 
-//-----------------------------------subMenuEl----------------------
+//----------subMenuEl----------------------
 subMenuEl.style.height = "100%";
 subMenuEl.style.backgroundColor = "var(--sub-menu-bg)";
 subMenuEl.className = "flex-around";
@@ -62,7 +61,18 @@ menuLinks.forEach((element) => {
 let topMenuLinks = document.querySelectorAll("a");
 // console.log(topMenuLinks);
 
-// Event Listners
+// -----------------------------------------------Functions----------------------------------------
+function buildSubMenu(mySubLinks) {
+  subMenuEl.textContent = "";
+  for (let i = 0; i < mySubLinks.length; i++) {
+    let newSubLink = document.createElement("a");
+    newSubLink.setAttribute("href", " mySubLinks[i].href");
+    newSubLink.textContent = mySubLinks[i].text;
+    subMenuEl.append(newSubLink);
+  }
+}
+
+//----------------------------------------Event Listners--------------------------------
 topMenuEl.addEventListener("click", (e) => {
   e.preventDefault();
   if (e.target.tagName !== "A") {
@@ -76,8 +86,6 @@ topMenuEl.addEventListener("click", (e) => {
     subMenuEl.style.top = "0";
     return;
   }
-  console.log(topMenuLinks[1]);
-  console.log(e.target.textContent);
 
   topMenuLinks.forEach((topMenuATag) => {
     topMenuATag.classList.remove("active");
@@ -85,11 +93,39 @@ topMenuEl.addEventListener("click", (e) => {
 
   e.target.className = "active";
 
+  let mySubLinks;
   menuLinks.forEach((data) => {
     if (e.target.textContent === data.text) {
       if (data.subLinks) {
         showingSubMenu = true;
+        mySubLinks = data.subLinks;
+      } else {
+        mainEl.innerHTML = `<h1>${e.target.textContent}</h1>`;
       }
     }
   });
+
+  if (showingSubMenu === true) {
+    buildSubMenu(mySubLinks);
+    subMenuEl.style.top = "100%";
+  } else {
+    subMenuEl.style.top = "0";
+  }
+});
+
+subMenuEl.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (e.target.tagName !== "A") {
+    return;
+  }
+  console.log(e.target);
+
+  showingSubMenu = false;
+  subMenuEl.style.top = "0";
+
+  topMenuLinks.forEach((topMenuATag) => {
+    topMenuATag.classList.remove("active");
+  });
+
+  mainEl.innerHTML = `<h1>${e.target.textContent}</h1>`;
 });
